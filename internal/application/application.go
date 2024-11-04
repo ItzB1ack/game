@@ -1,18 +1,19 @@
 package application
 
 import (
-	"github.com/ItzB1ack/game/pkg/life"
+	"context"
 	"fmt"
 	"time"
-	"context"
+
+	"github.com/ItzB1ack/game/pkg/life"
 )
 
-type Config struct{
-	Width int
+type Config struct {
+	Width  int
 	Height int
 }
 
-type Application struct{
+type Application struct {
 	Cfg Config
 }
 
@@ -24,9 +25,15 @@ func New(config Config) *Application {
 
 func (a *Application) Run(ctx context.Context) error {
 	// Объект для хранения текущего состояния сетки
-	currentWorld := life.NewWorld(a.Cfg.Height, a.Cfg.Width)
+	currentWorld, err := life.NewWorld(a.Cfg.Height, a.Cfg.Width)
+	if err != nil {
+		return err
+	}
 	// Объект для хранения очередного состояния сетки
-	nextWorld := life.NewWorld(a.Cfg.Height, a.Cfg.Width)
+	nextWorld, err := life.NewWorld(a.Cfg.Height, a.Cfg.Width)
+	if err != nil {
+		return err
+	}
 	// Заполняем сетку на 30%
 	currentWorld.RandInit(30)
 	for {
@@ -40,7 +47,6 @@ func (a *Application) Run(ctx context.Context) error {
 			return ctx.Err() // Возвращаем причину завершения
 		default: // По умолчанию делаем паузу
 			time.Sleep(100 * time.Millisecond)
-			break
 		}
 		// Очищаем экран
 		fmt.Print("\033[H\033[2J")

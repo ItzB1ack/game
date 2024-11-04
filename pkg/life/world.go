@@ -1,6 +1,7 @@
 package life
 
 import (
+	"errors"
 	"math/rand"
 	"time"
 )
@@ -12,15 +13,15 @@ type World struct {
 }
 
 // Используйте код из предыдущего урока по игре «Жизнь»
-func NewWorld(height, width int) *World {
+func NewWorld(height, width int) (*World, error) {
 	if height <= 0 || width <= 0 {
-		return nil
+		return nil, errors.New("invalid height or width")
 	}
 	return &World{
 		Height: height,
 		Width:  width,
 		Cells:  make([][]bool, height),
-	}
+	}, nil
 }
 
 func (w *World) next(x, y int) bool {
